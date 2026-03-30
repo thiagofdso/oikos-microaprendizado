@@ -1,0 +1,11 @@
+.gradient-aurora {
+  @apply bg-aurora;
+}
+
+.gradient-ocean-wave {
+  @apply bg-ocean-wave;
+}
+
+.gradient-sunset-rush {
+  @apply bg-sunset-rush;
+}

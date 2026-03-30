@@ -1,0 +1,11 @@
+/* Temporary shim until the official Surt Variable package ships with real font assets. */
+@font-face {
+  font-family: "Surt Variable";
+  font-style: normal;
+  font-weight: 200 700;
+  font-display: swap;
+  src:
+    local("Iowan Old Style"),
+    local("Palatino Linotype"),
+    local("Times New Roman");
+}

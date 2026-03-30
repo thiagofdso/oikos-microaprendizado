@@ -1,0 +1,179 @@
+@import "@fontsource-variable/surt/index.css";
+@import "@fontsource/ibm-plex-serif/400.css";
+@import "@fontsource/ibm-plex-serif/600.css";
+@import "../styles/gradients.css" layer(utilities);
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-areia-50: #f9f4eb;
+  --color-areia-100: #f1e7d6;
+  --color-areia-200: #e4d2b5;
+  --color-areia-300: #d6bb91;
+  --color-areia-400: #c7a36e;
+  --color-areia-500: #b88b4f;
+  --color-areia-600: #9f6d36;
+  --color-areia-700: #7d5328;
+  --color-areia-800: #5e3d20;
+  --color-areia-900: #402916;
+  --color-marinho-50: #eef4fb;
+  --color-marinho-100: #d4e1f1;
+  --color-marinho-200: #adc5df;
+  --color-marinho-300: #829fc7;
+  --color-marinho-400: #597bad;
+  --color-marinho-500: #365f90;
+  --color-marinho-600: #244570;
+  --color-marinho-700: #183152;
+  --color-marinho-800: #10223b;
+  --color-marinho-900: #091628;
+  --color-cobre-50: #fcf2ed;
+  --color-cobre-100: #f8ddd0;
+  --color-cobre-200: #f1baa2;
+  --color-cobre-300: #e99671;
+  --color-cobre-400: #df7046;
+  --color-cobre-500: #c9572d;
+  --color-cobre-600: #9f441f;
+  --color-cobre-700: #793317;
+  --color-cobre-800: #572410;
+  --color-cobre-900: #38170b;
+  --color-oliva-50: #f4f7ee;
+  --color-oliva-100: #e5edd7;
+  --color-oliva-200: #ccdab0;
+  --color-oliva-300: #afc585;
+  --color-oliva-400: #8faf5f;
+  --color-oliva-500: #749244;
+  --color-oliva-600: #5b7233;
+  --color-oliva-700: #435325;
+  --color-oliva-800: #303b1b;
+  --color-oliva-900: #202713;
+  --color-grafite-50: #f5f6f8;
+  --color-grafite-100: #e5e8ec;
+  --color-grafite-200: #c8ced8;
+  --color-grafite-300: #a8b1bf;
+  --color-grafite-400: #8792a5;
+  --color-grafite-500: #677286;
+  --color-grafite-600: #4d5768;
+  --color-grafite-700: #39414e;
+  --color-grafite-800: #262c36;
+  --color-grafite-900: #151a21;
+  --gradient-hero: linear-gradient(135deg, #183152 0%, #365f90 42%, #df7046 100%);
+  --gradient-ocean: radial-gradient(circle at top left, #829fc7 0%, #244570 38%, #151a21 100%);
+  --gradient-copper: linear-gradient(120deg, #f1baa2 0%, #c9572d 55%, #d6bb91 100%);
+  --radius-xs: 0.5rem;
+  --radius-sm: 0.875rem;
+  --radius-md: 1.25rem;
+  --radius-lg: 1.75rem;
+  --radius-xl: 2.5rem;
+  --radius-pill: 999px;
+  --font-sans: "Inter", "Segoe UI", Arial, sans-serif;
+  --font-serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+  /* TODO: Replace this fallback display stack when @fontsource-variable/surt becomes available. */
+  --font-display: "Surt Variable", "Iowan Old Style", "Palatino Linotype", var(--font-serif);
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+@layer base {
+  html {
+    min-height: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100vh;
+    margin: 0;
+    position: relative;
+    isolation: isolate;
+    overflow-x: hidden;
+    background-color: var(--color-areia-50);
+    background-image:
+      radial-gradient(circle at top, rgba(255, 255, 255, 0.72), transparent 42%),
+      linear-gradient(180deg, var(--color-areia-50) 0%, var(--color-areia-100) 28%, var(--color-marinho-800) 100%);
+    color: var(--color-grafite-900);
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.07;
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.6) 0, transparent 30%),
+      radial-gradient(circle at 80% 0, rgba(201, 87, 45, 0.4) 0, transparent 25%),
+      linear-gradient(0deg, rgba(21, 26, 33, 0.25), rgba(21, 26, 33, 0.25));
+    background-size: 240px 240px, 320px 320px, 100% 100%;
+    mix-blend-mode: soft-light;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  ::selection {
+    background: rgba(54, 95, 144, 0.2);
+    color: var(--color-grafite-900);
+  }
+}
+
+@keyframes pulse-dial {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: scaleX(0.92);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes shimmer-scroll {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08));
+    box-shadow: 0 24px 60px -32px rgba(9, 22, 40, 0.58);
+    backdrop-filter: blur(24px);
+  }
+
+  .frosted-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.14);
+    padding: 0.55rem 1rem;
+    backdrop-filter: blur(12px);
+  }
+
+  .glow-divider {
+    height: 1px;
+    width: 100%;
+    border: 0;
+    background-image: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.72), transparent);
+    box-shadow: 0 0 18px rgba(255, 255, 255, 0.22);
+  }
+
+  .pulse-line {
+    background-image: linear-gradient(90deg, transparent, rgba(223, 112, 70, 0.92), transparent);
+    background-size: 200% 100%;
+    animation: shimmer-scroll 5.5s linear infinite, pulse-dial 3.2s ease-in-out infinite;
+  }
+}
