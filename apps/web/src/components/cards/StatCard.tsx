@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 
-import clsx from "clsx";
 import { ArrowDownRight, ArrowUpRight, Minus } from "lucide-react";
 
 import { GlassPanel, type GlassAccent } from "./GlassPanel";
@@ -21,11 +20,12 @@ export interface StatCardProps {
   className?: string;
 }
 
-const trendStyles: Record<TrendDirection, string> = {
+const trendStyles: Record<Exclude<TrendDirection, "flat">, string> = {
   up: "text-oliva-600",
   down: "text-cobre-600",
-  flat: "text-grafite-500",
 };
+
+const flatTextGradient = "bg-gradient-to-r from-grafite-600 via-grafite-400 to-areia-300 bg-clip-text text-transparent";
 
 const trendIcons: Record<TrendDirection, ReactNode> = {
   up: <ArrowUpRight className="h-4 w-4" />,
@@ -46,33 +46,27 @@ export function StatCard({
   children,
   className,
 }: StatCardProps) {
-  const isHorizontal = orientation === "horizontal";
-  const contentLayout = clsx(
-    "flex flex-col gap-4",
-    isHorizontal && children && trend ? "md:flex-row md:items-start md:gap-6" : null,
-  );
+  const hasExtra = Boolean(children);
+  const isHorizontal = orientation === "horizontal" && hasExtra;
+  const columns = isHorizontal ? 2 : 1;
 
-  const blocks: ReactNode[] = [];
+  const trendTextClass =
+    trend?.direction === "flat" ? flatTextGradient : trend ? trendStyles[trend.direction] : "text-grafite-500";
+  const trendIconClass = trend?.direction === "flat" ? "text-grafite-400" : trend ? trendStyles[trend.direction] : "";
 
-  if (trend) {
-    blocks.push(
-      <div key="trend" className="flex min-w-0 flex-1 flex-col gap-2">
-        <div className={clsx("flex items-center gap-2 text-xs font-semibold", trendStyles[trend.direction])}>
-          {trendIcons[trend.direction]}
-          <span>{trend.value}</span>
-          {trend.label ? <span className="text-grafite-500">{trend.label}</span> : null}
+  const statBlock = (
+    <div className="flex min-w-0 flex-col gap-2">
+      {trend ? (
+        <div className="flex items-center gap-2 text-xs font-semibold">
+          <span className={trendIconClass}>{trendIcons[trend.direction]}</span>
+          <span className={trendTextClass}>{trend.value}</span>
+          {trend.label ? <span className={trendTextClass}>{trend.label}</span> : null}
         </div>
-      </div>,
-    );
-  }
-
-  if (children) {
-    blocks.push(
-      <div key="extra" className={clsx("min-w-0", isHorizontal && trend ? "md:flex-1" : null)}>
-        {children}
-      </div>,
-    );
-  }
+      ) : (
+        <p className="text-xs text-grafite-500">Sem variação recente</p>
+      )}
+    </div>
+  );
 
   return (
     <GlassPanel
@@ -83,11 +77,11 @@ export function StatCard({
       accent={accent}
       icon={icon}
       actions={actions}
-      columns={1}
+      columns={columns}
       className={className}
-      contentClassName={contentLayout}
     >
-      {blocks.length > 0 ? blocks : null}
+      {statBlock}
+      {hasExtra ? <div className="min-w-0">{children}</div> : null}
     </GlassPanel>
   );
 }
