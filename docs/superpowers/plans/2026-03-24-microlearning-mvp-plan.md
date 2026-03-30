@@ -34,17 +34,17 @@
 - Create: `vitest.config.ts`.
 - Create: `src/tests/setup.ts`.
 
-- [ ] **Step 1: Scaffold app**
+- [x] **Step 1: Scaffold app**
   - From o repo raiz, execute `pnpm create next-app@latest apps/web --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"` para gerar o projeto em uma pasta vazia.
   - `cd apps/web` antes dos próximos passos e confirme que o dev server inicia com `pnpm dev`.
-- [ ] **Step 2: Add deps**
+- [x] **Step 2: Add deps**
   - Run: `pnpm add clsx class-variance-authority @radix-ui/react-dialog @radix-ui/react-scroll-area lucide-react @fontsource-variable/surt @fontsource/ibm-plex-serif tailwind-merge`
   - Dev deps: `pnpm add -D vitest @testing-library/react @testing-library/jest-dom jsdom @testing-library/user-event`
-- [ ] **Step 3: Configure Vitest**
+- [x] **Step 3: Configure Vitest**
   - Add `"test": "vitest run"`, `"test:watch": "vitest"` to `package.json` scripts.
   - Create `vitest.config.ts` with Next.js + React Testing Library setup (jsdom, alias `@`).
   - Create `src/tests/setup.ts` importing `@testing-library/jest-dom`.
-- [ ] **Step 4: Verify lint/tests**
+- [x] **Step 4: Verify lint/tests**
   - Run: `pnpm lint`
   - Run: `pnpm test`
   - Both should pass (no tests yet).
@@ -55,18 +55,18 @@
 - Modify: `src/app/globals.css`, `tailwind.config.ts`.
 - Create: `src/styles/gradients.css`, `src/lib/theme.ts`, `src/data/mock-data.ts`, `src/types/content.ts`.
 
-- [ ] **Step 1: Define tokens**
+- [x] **Step 1: Define tokens**
   - In `src/lib/theme.ts` export palettes (areia, marinho, cobre, oliva, grafite) e alias `colors.primary/secondary/accent` apontando para essas paletas, além de glass blur configs e spacing helpers.
-- [ ] **Step 2: Tailwind config**
+- [x] **Step 2: Tailwind config**
   - Extend colors with theme tokens, add font families referencing CSS variables, configure gradients and animations (pulse dial, shimmer scroll).
-- [ ] **Step 3: Global styles**
+- [x] **Step 3: Global styles**
   - Import `@fontsource-variable/surt` & `@fontsource/ibm-plex-serif` in `globals.css`.
   - Define CSS variables for colors, add base styles (body gradient, noise overlay) and utility classes (glass, pill, pulse-line).
   - Create `src/styles/gradients.css` with reusable background classes and import in `globals.css`.
-- [ ] **Step 4: Types & data**
+- [x] **Step 4: Types & data**
   - In `src/types/content.ts` describe Session, Lesson, Exercise, Student, Notification, ForumTopic, Church, Plan, PastorUser.
   - In `src/data/mock-data.ts` export typed arrays/objects covering all cenários (mín. 3 sessões, 6 aulas, 5 alunos ranking, 4 notificações, 2 igrejas, 3 tópicos fórum, exemplos de feedbacks e planos).
-- [ ] **Step 5: Smoke test tokens**
+- [x] **Step 5: Smoke test tokens**
   - Write `src/__tests__/theme.test.ts` verifying theme exports (e.g., `expect(theme.colors.primary).toBeDefined()`).
   - Run `pnpm test src/__tests__/theme.test.ts`.
 
@@ -77,18 +77,18 @@
 - Create: `src/components/layout/AppShell.tsx`, `Header.tsx`, `LiquidMenu.tsx`, `NotificationDrawer.tsx`, `Breadcrumbs.tsx`.
 - Create: `src/components/layout/__tests__/LiquidMenu.test.tsx`.
 
-- [ ] **Step 1: AppShell wrapper**
+- [x] **Step 1: AppShell wrapper**
   - Build component applying glass background, receives `activeRole` + `breadcrumbs` + `children`.
   - Handles responsive layout (sidebar vs bottom nav) using CSS grid.
-- [ ] **Step 2: LiquidMenu**
+- [x] **Step 2: LiquidMenu**
   - Component renders primary nav + optional submenu for sessões (with mock statuses). Animations via Tailwind classes referencing gradient CSS.
   - Accepts `role` prop to filter entries (aluno/pastor/admin) and include “Trocar visão – protótipo” link no rodapé.
-- [ ] **Step 3: Header & Breadcrumbs**
+- [x] **Step 3: Header & Breadcrumbs**
   - Header com logo, breadcrumbs e ícone de notificações com badge dinâmico (número vindo dos mocks); integrar `Breadcrumbs` component.
   - Notification icon toggles a state (use `useState` purely local) to show drawer.
-- [ ] **Step 4: NotificationDrawer**
+- [x] **Step 4: NotificationDrawer**
   - Use Radix Dialog or custom panel; lists notifications grouped by categoria; include toggle control (static) and CTA “Pausar competição”.
-- [ ] **Step 5: Tests**
+- [x] **Step 5: Tests**
   - In `LiquidMenu.test.tsx` render component for cada role and assert correct menu items/submenus appear.
   - Run `pnpm test src/components/layout/__tests__/LiquidMenu.test.tsx`.
 
