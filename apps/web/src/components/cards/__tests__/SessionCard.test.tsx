@@ -39,6 +39,14 @@ describe("SessionCard", () => {
     expect(screen.getByText(cta)).toBeInTheDocument();
   });
 
+  it("renders both vertical and horizontal progressbars with distinct labels", () => {
+    render(<SessionCard {...baseProps} status="in-progress" progressPercent={42} />);
+
+    expect(screen.getAllByText("42%")).toHaveLength(2);
+    expect(screen.getByRole("progressbar", { name: "Progresso da sessão (vertical)" })).toBeInTheDocument();
+    expect(screen.getByRole("progressbar", { name: "Progresso da sessão (horizontal)" })).toBeInTheDocument();
+  });
+
   it("usa ícone correto para sessão concluída", () => {
     render(<SessionCard {...baseProps} status="completed" />);
 
@@ -46,7 +54,7 @@ describe("SessionCard", () => {
     expect(screen.queryByRole("img", { name: /rever conteúdo/i })).not.toBeInTheDocument();
   });
 
-  it("expands lessons preview when toggle is clicked", () => {
+  it("toggles the lessons preview with accessible state and rotated icon", () => {
     render(
       <SessionCard
         {...baseProps}
@@ -58,12 +66,21 @@ describe("SessionCard", () => {
       />,
     );
 
-    const lessonItem = screen.getByText("Aula 1");
-    expect(lessonItem).not.toBeVisible();
+    const toggleButton = screen.getByRole("button", { name: "Expandir aulas" });
+    const controlsId = toggleButton.getAttribute("aria-controls");
+    const icon = toggleButton.querySelector("svg");
 
-    fireEvent.click(screen.getByRole("button", { name: "Expandir aulas" }));
+    expect(toggleButton).toHaveAttribute("aria-expanded", "false");
+    expect(controlsId).toBeTruthy();
+    expect(document.getElementById(controlsId as string)).toBeInTheDocument();
+    expect(icon).not.toHaveClass("rotate-180");
+    expect(screen.getByText("Aula 1")).not.toBeVisible();
 
-    expect(screen.getByRole("button", { name: "Recolher aulas" })).toBeInTheDocument();
-    expect(lessonItem).toBeVisible();
+    fireEvent.click(toggleButton);
+
+    expect(screen.getByRole("button", { name: "Recolher aulas" })).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("button", { name: "Recolher aulas" })).toHaveAttribute("aria-controls", controlsId);
+    expect(screen.getByText("Aula 1")).toBeVisible();
+    expect(toggleButton.querySelector("svg")).toHaveClass("rotate-180");
   });
 });

@@ -127,7 +127,7 @@ export function SessionCard({
           aria-valuenow={progressClamp}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label="Progresso da sessão"
+          aria-label="Progresso da sessão (horizontal)"
           className="mt-2 h-2 w-full rounded-full bg-white/20"
         >
           <div
