@@ -3,9 +3,17 @@
 import { useId, useState } from "react";
 
 import clsx from "clsx";
+import Link from "next/link";
 import { CheckCircle2, ChevronDown, Circle, Play, RotateCcw } from "lucide-react";
 
 export type SessionStatus = "not-started" | "in-progress" | "completed";
+
+type LessonPreview = {
+  title: string;
+  duration: string;
+  completed: boolean;
+  href?: string;
+};
 
 export interface SessionCardProps {
   title: string;
@@ -14,7 +22,8 @@ export interface SessionCardProps {
   durationLabel: string;
   progressPercent: number;
   status: SessionStatus;
-  lessonsPreview?: Array<{ title: string; duration: string; completed: boolean }>;
+  lessonsPreview?: LessonPreview[];
+  onLessonSelect?: (lesson: LessonPreview, index: number) => void;
   onAction?: () => void;
   className?: string;
 }
@@ -39,6 +48,7 @@ export function SessionCard({
   progressPercent,
   status,
   lessonsPreview,
+  onLessonSelect,
   onAction,
   className,
 }: SessionCardProps) {
@@ -47,6 +57,10 @@ export function SessionCard({
   const progressClamp = Math.min(100, Math.max(0, progressPercent));
   const ctaLabel = CTA_LABELS[status];
   const hasLessons = Boolean(lessonsPreview?.length);
+  const lessonRowClassName =
+    "flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-left transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60";
+  const lessonRowDisabledClassName =
+    "flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-left cursor-default opacity-60";
 
   return (
     <div
@@ -149,37 +163,120 @@ export function SessionCard({
           )}
         >
           <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-3">
-            <ol className="space-y-2 text-sm">
+            <ol className="text-sm">
               {lessonsPreview?.map((lesson, index) => (
-                <li key={`${lesson.title}-${index}`} className="flex items-center justify-between gap-3">
-                  <span className="flex min-w-0 items-center gap-3">
-                    <span className="w-6 text-xs font-semibold text-current/70">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <span
-                      className={clsx(
-                        "min-w-0 truncate",
-                        lesson.completed && "text-current/70 line-through",
-                      )}
+                <li
+                  key={`${lesson.title}-${index}`}
+                  className={clsx(index > 0 && "border-t border-white/10")}
+                >
+                  {lesson.href ? (
+                    <Link
+                      href={lesson.href}
+                      aria-label={`Ir para aula ${String(index + 1).padStart(2, "0")} – ${lesson.title} (${lesson.duration})`}
+                      className={lessonRowClassName}
                     >
-                      {lesson.title}
-                    </span>
-                  </span>
-                  <span className="flex items-center gap-2 text-xs text-current/70">
-                    <span className="inline-flex items-center">
-                      <span
-                        role="img"
-                        aria-label={lesson.completed ? "Aula concluída" : "Aula não concluída"}
-                      >
-                        {lesson.completed ? (
-                          <CheckCircle2 aria-hidden="true" className="h-4 w-4 text-oliva-600" />
-                        ) : (
-                          <Circle aria-hidden="true" className="h-4 w-4 text-current/50" />
-                        )}
+                      <span className="flex min-w-0 items-center gap-3">
+                        <span className="w-6 text-xs font-semibold text-current/70">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span
+                          className={clsx(
+                            "min-w-0 truncate",
+                            lesson.completed && "text-current/70 line-through",
+                          )}
+                        >
+                          {lesson.title}
+                        </span>
                       </span>
-                    </span>
-                    <span>{lesson.duration}</span>
-                  </span>
+                      <span className="flex items-center gap-2 text-xs text-current/70">
+                        <span className="inline-flex items-center">
+                          <span
+                            role="img"
+                            aria-label={lesson.completed ? "Aula concluída" : "Aula não concluída"}
+                          >
+                            {lesson.completed ? (
+                              <CheckCircle2 aria-hidden="true" className="h-4 w-4 text-oliva-600" />
+                            ) : (
+                              <Circle aria-hidden="true" className="h-4 w-4 text-current/50" />
+                            )}
+                          </span>
+                        </span>
+                        <span>{lesson.duration}</span>
+                      </span>
+                    </Link>
+                  ) : onLessonSelect ? (
+                    <button
+                      type="button"
+                      onClick={() => onLessonSelect(lesson, index)}
+                      aria-label={`Ir para aula ${String(index + 1).padStart(2, "0")} – ${lesson.title} (${lesson.duration})`}
+                      className={lessonRowClassName}
+                    >
+                      <span className="flex min-w-0 items-center gap-3">
+                        <span className="w-6 text-xs font-semibold text-current/70">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span
+                          className={clsx(
+                            "min-w-0 truncate",
+                            lesson.completed && "text-current/70 line-through",
+                          )}
+                        >
+                          {lesson.title}
+                        </span>
+                      </span>
+                      <span className="flex items-center gap-2 text-xs text-current/70">
+                        <span className="inline-flex items-center">
+                          <span
+                            role="img"
+                            aria-label={lesson.completed ? "Aula concluída" : "Aula não concluída"}
+                          >
+                            {lesson.completed ? (
+                              <CheckCircle2 aria-hidden="true" className="h-4 w-4 text-oliva-600" />
+                            ) : (
+                              <Circle aria-hidden="true" className="h-4 w-4 text-current/50" />
+                            )}
+                          </span>
+                        </span>
+                        <span>{lesson.duration}</span>
+                      </span>
+                    </button>
+                  ) : (
+                    <div
+                      aria-disabled="true"
+                      tabIndex={-1}
+                      aria-label={`Ir para aula ${String(index + 1).padStart(2, "0")} – ${lesson.title} (${lesson.duration})`}
+                      className={lessonRowDisabledClassName}
+                    >
+                      <span className="flex min-w-0 items-center gap-3">
+                        <span className="w-6 text-xs font-semibold text-current/70">
+                          {String(index + 1).padStart(2, "0")}
+                        </span>
+                        <span
+                          className={clsx(
+                            "min-w-0 truncate",
+                            lesson.completed && "text-current/70 line-through",
+                          )}
+                        >
+                          {lesson.title}
+                        </span>
+                      </span>
+                      <span className="flex items-center gap-2 text-xs text-current/70">
+                        <span className="inline-flex items-center">
+                          <span
+                            role="img"
+                            aria-label={lesson.completed ? "Aula concluída" : "Aula não concluída"}
+                          >
+                            {lesson.completed ? (
+                              <CheckCircle2 aria-hidden="true" className="h-4 w-4 text-oliva-600" />
+                            ) : (
+                              <Circle aria-hidden="true" className="h-4 w-4 text-current/50" />
+                            )}
+                          </span>
+                        </span>
+                        <span>{lesson.duration}</span>
+                      </span>
+                    </div>
+                  )}
                 </li>
               ))}
             </ol>

@@ -1,7 +1,23 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import type { AnchorHTMLAttributes, ReactNode } from "react";
+import { describe, expect, it, vi } from "vitest";
 
 import { SessionCard } from "@/components/cards/SessionCard";
+
+vi.mock("next/link", () => ({
+  default: ({
+    children,
+    href,
+    ...props
+  }: {
+    children: ReactNode;
+    href: string;
+  } & AnchorHTMLAttributes<HTMLAnchorElement>) => (
+    <a href={href} {...props}>
+      {children}
+    </a>
+  ),
+}));
 
 const baseProps = {
   title: "Leadership",
@@ -82,5 +98,86 @@ describe("SessionCard", () => {
     expect(screen.getByRole("button", { name: "Recolher aulas" })).toHaveAttribute("aria-controls", controlsId);
     expect(screen.getByText("Aula 1")).toBeVisible();
     expect(toggleButton.querySelector("svg")).toHaveClass("rotate-180");
+  });
+
+  it("renders each lesson row as a link or button with separators and full-row click targets", () => {
+    const onLessonSelect = vi.fn();
+
+    render(
+      <SessionCard
+        {...baseProps}
+        status="in-progress"
+        onLessonSelect={onLessonSelect}
+        lessonsPreview={[
+          {
+            title: "Follow-up ágil",
+            duration: "6 min",
+            completed: false,
+            href: "/aulas/follow-up-agil",
+          },
+          {
+            title: "Workshop prático",
+            duration: "8 min",
+            completed: true,
+          },
+        ]}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Expandir aulas" }));
+
+    const firstLesson = screen.getByRole("link", {
+      name: "Ir para aula 01 – Follow-up ágil (6 min)",
+    });
+    const secondLesson = screen.getByRole("button", {
+      name: "Ir para aula 02 – Workshop prático (8 min)",
+    });
+
+    expect(firstLesson).toHaveAttribute("href", "/aulas/follow-up-agil");
+    expect(firstLesson).toHaveClass("w-full");
+    expect(secondLesson).toHaveClass("w-full");
+    fireEvent.click(secondLesson);
+    expect(onLessonSelect).toHaveBeenCalledWith(
+      {
+        title: "Workshop prático",
+        duration: "8 min",
+        completed: true,
+      },
+      1,
+    );
+
+    const items = screen.getAllByRole("listitem");
+    expect(items[0]).not.toHaveClass("border-t");
+    expect(items[1]).toHaveClass("border-t", "border-white/10");
+  });
+
+  it("renders a non-interactive fallback when no lesson handler is provided", () => {
+    render(
+      <SessionCard
+        {...baseProps}
+        status="in-progress"
+        lessonsPreview={[
+          {
+            title: "Workshop prático",
+            duration: "8 min",
+            completed: true,
+          },
+        ]}
+      />,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Expandir aulas" }));
+
+    expect(
+      screen.queryByRole("button", {
+        name: "Ir para aula 01 – Workshop prático (8 min)",
+      }),
+    ).not.toBeInTheDocument();
+
+    const fallback = screen.getByLabelText("Ir para aula 01 – Workshop prático (8 min)");
+    expect(fallback).toHaveAttribute("aria-disabled", "true");
+    expect(fallback).toHaveAttribute("tabindex", "-1");
+    expect(fallback.tagName).toBe("DIV");
+    expect(fallback).toHaveClass("cursor-default", "opacity-60");
   });
 });
